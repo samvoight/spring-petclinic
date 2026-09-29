@@ -210,6 +210,7 @@ public class Owner extends Person {
 
 	/**
 	 * Pair of a {@link Pet} and one of its {@link Visit}s.
+	 *
 	 * @param pet the pet
 	 * @param visit the visit
 	 */
