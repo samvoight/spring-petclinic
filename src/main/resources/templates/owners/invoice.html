@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+
+<body>
+
+  <h2 th:text="#{invoice}">Invoice</h2>
+
+  <table class="table table-striped" th:object="${owner}">
+    <tr>
+      <th th:text="#{owner}">Owner</th>
+      <td th:text="*{firstName + ' ' + lastName}"></td>
+    </tr>
+    <tr>
+      <th th:text="#{address}">Address</th>
+      <td th:text="*{address}"></td>
+    </tr>
+    <tr>
+      <th th:text="#{city}">City</th>
+      <td th:text="*{city}"></td>
+    </tr>
+    <tr>
+      <th th:text="#{telephone}">Telephone</th>
+      <td th:text="*{telephone}"></td>
+    </tr>
+  </table>
+
+  <table class="table table-striped">
+    <tr>
+      <th th:text="#{pet}">Pet</th>
+      <td th:text="${pet.name}"></td>
+    </tr>
+    <tr>
+      <th th:text="#{type}">Type</th>
+      <td th:text="${pet.type}"></td>
+    </tr>
+    <tr>
+      <th th:text="#{visitDate}">Visit Date</th>
+      <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></td>
+    </tr>
+    <tr>
+      <th th:text="#{description}">Description</th>
+      <td th:text="${visit.description}"></td>
+    </tr>
+  </table>
+
+  <table class="table table-striped">
+    <tr>
+      <th th:text="#{consultationFee}">Consultation Fee</th>
+      <td th:text="${#numbers.formatDecimal(consultationFee, 1, 2)}"></td>
+    </tr>
+    <tr>
+      <th th:text="#{total}">Total</th>
+      <td th:text="${#numbers.formatDecimal(total, 1, 2)}"></td>
+    </tr>
+  </table>
+
+  <a th:href="@{/owners/__${owner.id}__}" class="btn btn-primary" th:text="#{backToOwner}">Back to Owner</a>
+
+</body>
+
+</html>

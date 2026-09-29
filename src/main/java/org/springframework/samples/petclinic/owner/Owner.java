@@ -16,8 +16,10 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.petclinic.model.Person;
@@ -184,5 +186,38 @@ public class Owner extends Person {
 
 		pet.addVisit(visit);
 	}
+
+	/**
+	 * Finds this owner's latest visit across all pets, preferring the most recent visit
+	 * date and breaking ties with the higher visit id.
+	 * @return the pet and visit for the latest visit, or empty if none exist
+	 */
+	public Optional<PetVisit> findLatestVisit() {
+		PetVisit latest = null;
+		for (Pet pet : getPets()) {
+			for (Visit visit : pet.getVisits()) {
+				if (visit.getDate() == null) {
+					continue;
+				}
+				PetVisit candidate = new PetVisit(pet, visit);
+				if (latest == null || PET_VISIT_COMPARATOR.compare(candidate, latest) > 0) {
+					latest = candidate;
+				}
+			}
+		}
+		return Optional.ofNullable(latest);
+	}
+
+	/**
+	 * Pair of a {@link Pet} and one of its {@link Visit}s.
+	 * @param pet the pet
+	 * @param visit the visit
+	 */
+	public record PetVisit(Pet pet, Visit visit) {
+	}
+
+	private static final Comparator<PetVisit> PET_VISIT_COMPARATOR = Comparator
+		.comparing((PetVisit pv) -> pv.visit().getDate())
+		.thenComparing(pv -> pv.visit().getId(), Comparator.nullsFirst(Integer::compareTo));
 
 }
