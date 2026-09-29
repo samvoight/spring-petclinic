@@ -150,15 +150,15 @@ class InvoiceControllerTests {
 	}
 
 	@Test
-	void generateInvoiceThrowsWhenOwnerMissing() throws Exception {
-		mockMvc.perform(get("/owners/{ownerId}/invoice", 999))
-			.andExpect(result -> {
-				Exception resolved = result.getResolvedException();
-				if (!(resolved instanceof IllegalArgumentException)
-						|| !resolved.getMessage().contains("Owner not found")) {
-					throw new AssertionError("Expected IllegalArgumentException for missing owner, got: " + resolved);
-				}
-			});
+	void generateInvoiceThrowsWhenOwnerMissing() {
+		Exception exception = assertThrows(Exception.class,
+				() -> mockMvc.perform(get("/owners/{ownerId}/invoice", 999)));
+		Throwable root = exception;
+		while (root.getCause() != null && !(root instanceof IllegalArgumentException)) {
+			root = root.getCause();
+		}
+		assertInstanceOf(IllegalArgumentException.class, root);
+		assertTrue(root.getMessage().contains("Owner not found"));
 	}
 
 }
